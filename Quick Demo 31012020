@@ -1,0 +1,196 @@
+#include "Firebase_Arduino_WiFiNINA.h"
+#include "parameter.h"
+#include <NTPClient.h>
+#include <WiFiUdp.h>
+#include <Wire.h>
+
+#include "dht.h"
+#define dht_apin A1 // Analog Pin sensor is connected to
+ 
+
+//details for firebase-api 
+#define FIREBASE_HOST "s13-metta.firebaseio.com"
+#define FIREBASE_AUTH "2VNjmFRDwpclUrNtdeD79BIOP8fpLtlvLgaUAC2b"
+//details for wifi connection can be changed at arduino.h
+char WIFI_SSID[] = SECRET_SSID;
+char WIFI_PASSWORD[] = SECRET_PASS;
+int timeinterval = time_;
+
+int sensorPin = A0; 
+int sensorValue;  
+int limit = 300; 
+int count = 0;
+int counter = 0;
+String date ;
+int seconds;
+int seconds2 = 0;
+String formattedDate;
+String dayStamp ;
+String timeStamp;
+int moisturereading;
+int tempreading;
+int humreading;
+
+// Define NTP Client to get time
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP);
+
+
+// device name 
+String path = "/Moisture_Sensor";
+
+//Define Firebase data object
+FirebaseData firebaseData;
+
+//RESET function
+void(* resetFunc) (void) = 0;
+String hostName = "www.google.com";
+
+dht DHT;
+
+void setup()
+{
+  Serial.begin(9600);
+  Serial.println(".");
+  
+  Serial.print("Connecting to Wi-Fi");
+  int status = WL_IDLE_STATUS;
+  while (status != WL_CONNECTED)
+  {
+    status = WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+    Serial.print(".");
+    delay(300);
+  }
+  Serial.println();
+  Serial.print("Connected with IP: ");
+  Serial.println(WiFi.localIP()[3]);
+
+  while ( WiFi.ping(hostName) < 0 ){
+    Serial.println("waiting for connection ..");
+  }
+Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH, WIFI_SSID, WIFI_PASSWORD);
+  Firebase.reconnectWiFi(true);
+ 
+  // Initialize a NTPClient to get time
+  timeClient.begin();
+  // Set offset time in seconds to adjust for your timezone, for example:
+  // GMT +1 = 3600
+  // GMT +8 = 28800
+  // GMT -1 = -3600
+  // GMT 0 = 0
+  timeClient.setTimeOffset(28800);
+
+   while (!Serial) {
+    delay(10);
+  }
+  Serial.println("Moisture Sensor Test");  
+
+  Serial.begin(9600);
+  delay(500);//Delay to let system boot
+  Serial.println("DHT11 Humidity & temperature Sensor\n\n");
+  delay(1000);//Wait before accessing Sensor
+}
+
+
+
+void loop(){
+
+  int status ;
+  //enter loop if wifi is disconnected and attempt to reconnect
+  Serial.println(WiFi.status());
+  Serial.println(WiFi.ping(hostName));
+  while (WiFi.status() != 3 & WiFi.ping(hostName) < 0)
+  {
+    if (counter <= 5){
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+    Serial.print(".");
+    counter += 1; 
+    delay(300);
+    }
+    else {
+     resetFunc();
+    }
+  }
+   counter = 0;
+   
+   if(!timeClient.update()) {
+    timeClient.forceUpdate();
+  }
+  
+   if (count == 0 ) {
+  int splitT1 =  timeClient.getFormattedDate().indexOf("T");
+  date = String(timeClient.getFormattedDate().substring(0, splitT1));
+  }
+
+  Serial.println(date);
+  Serial.println(String(timeClient.getFormattedDate()));
+   if ( date != String(timeClient.getFormattedDate().substring(0, timeClient.getFormattedDate().indexOf("T")))) {
+    Serial.println("It has been 24hrs");
+    resetFunc();
+   }
+   seconds = timeClient.getEpochTime();
+  if (seconds - seconds2 >= timeinterval or count == 0) {
+ // The formattedDate comes with the following format:
+  // 2018-05-28T16:00:13Z
+  // We need to extract date and time
+  formattedDate = timeClient.getFormattedDate();
+  seconds2 = seconds ;
+  int splitT = formattedDate.indexOf("T");
+  dayStamp = formattedDate.substring(0, splitT);
+  Serial.print("DATE: ");
+  Serial.println(dayStamp);
+  // Extract time
+  timeStamp = formattedDate.substring(splitT+1, formattedDate.length()-1);
+  Serial.print("HOUR: ");
+  Serial.println(timeStamp);
+
+
+    DHT.read11(dht_apin);
+    
+    Serial.print("Current humidity = ");
+    Serial.print(DHT.humidity);
+    Serial.print("%  ");
+    Serial.print("temperature = ");
+    Serial.print(DHT.temperature); 
+    Serial.println("C  ");
+    
+    delay(1000);
+
+
+//Read temperature from moisture sensor
+  
+ sensorValue = analogRead(sensorPin); 
+ Serial.println("Analog Value : ");
+ Serial.println(sensorValue);
+  moisturereading=sensorValue;
+tempreading=DHT.temperature;
+humreading=DHT.humidity;
+ String jsonStr;
+  //Compile all data into json format
+
+    jsonStr = "{ \"hum\" : { \"percentage(%)\" :" + String(humreading)+ " }, \"Temp\" : { \"Temp(degree)\" :" + String(tempreading)+ " },\"Moisture\" : { \"percentage(%)\" :" + String(moisturereading)+ " }}" ;
+  if (WiFi.status() == 3 && WiFi.ping(hostName)>= 0)
+    if (Firebase.updateNode(firebaseData, path + "/" + dayStamp + "/" + timeStamp  , jsonStr))
+    {
+      Serial.println("----------Push result-----------");
+      Serial.println("PATH: " + firebaseData.dataPath());
+      Serial.print("PUSH NAME: ");
+      Serial.println(firebaseData.pushName());
+      Serial.println("--------------------------------");
+      Serial.println();
+    }
+    else
+    {
+      Serial.println("----------Can't push data--------");
+      Serial.println("REASON: " + firebaseData.errorReason());
+      Serial.println("--------------------------------");
+      Serial.println();
+    }
+
+    }
+
+
+
+
+  
+  }
