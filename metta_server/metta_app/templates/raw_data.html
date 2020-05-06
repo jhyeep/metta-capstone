@@ -1,0 +1,56 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="{% static 'DataTables/datatables.min.css' %}"/>
+    <script type="text/javascript" src="{% static 'DataTables/datatables.min.js' %}"></script>
+    <title>Sensor Raw Data</title>
+</head>
+<body>
+    <div class="container-fluid">
+        <h2>Sensor Raw Data</h2>
+        <table class="table table-hover table-bordered table-striped table-sm" id="myTable">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Timestamp</th>
+                    <th scope="col">Device ID</th>
+                    <th scope="col">EC</th>
+                    <th scope="col">Temperature</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in all %}
+                <tr>
+                    <th scope="row">{{e.pk}}</th>
+                    <td>{{e.datetime_created | date:"dM G:i:s"}}</td>
+                    <td>{{e.sensor_id}}</td>
+                    <td>{{e.ec}}</td>
+                    <td>{{e.temp}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+<script>
+    $(document).ready( function () {
+        $("#myTable").DataTable( {
+            "paging": false,
+        } );
+    } );
+</script>
+<style>
+table{
+    font-size: small;
+}
+td, th{
+    padding: .1rem !important;
+}
+</style>
+
+</html>

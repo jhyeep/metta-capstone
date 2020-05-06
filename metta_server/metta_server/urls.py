@@ -19,8 +19,12 @@ from django.urls import include
 from django.views.generic import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
+import metta_app.views as main_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('app/', include('metta_app.urls')),
+    path('new', main_views.sensorentry_new, name="sensorentry_new"),
+    # path('get_latest', main_views.get_latest, name="get_latest"),
+    path('raw_data', main_views.raw_data, name="raw_data"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
