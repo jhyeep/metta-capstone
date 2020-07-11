@@ -1,14 +1,302 @@
-{% extends "base.html" %}
-
-{% block content %}
-  <h1>Dynamic content</h1>
-  <p>The database has the following records:</p>
-  <!-- <ul>
+{% extends "base.html" %} {% block content %}
+<!-- <h1>Dynamic content</h1>
+  <p>The database has the following records:</p> -->
+<!-- <ul>
     <li><strong>Number of Crops:</strong> {{ num_crops }}</li>
     <li><strong>Crops:</strong> {{ crops }}</li>
   </ul> -->
-  <ul>
-    <li><strong>EC:</strong> {{ ec }}</li>
-    <li><strong>Temperature:</strong> {{ temp }}</li>
-  </ul>
+<div id="content">
+  <div class="container-fluid">
+    <div class="row" style="margin: 0px;">
+      <div class="col">
+        <div class="d-sm-flex justify-content-between align-items-center mb-4">
+          <h3
+            class="text-dark mb-0"
+            style="
+              margin: 0px;
+              margin-top: 28px;
+              font-family: Lato, sans-serif;
+            "
+          >
+            <strong>Overview</strong>
+          </h3>
+          <button
+            class="btn btn-primary btn-lg text-center border-white shadow d-none d-sm-inline-block"
+            type="button"
+            id="growth_period_input"
+            style="
+              border-radius: 24px;
+              text-align: center;
+              background-color: #ffffff;
+              color: rgb(0, 0, 0);
+              font-family: lato;
+              font-size: 18px;
+              margin-top: 24px;
+            "
+          >
+            Growth Period: <strong>4 weeks </strong>
+          </button>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="card shadow mb-4">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col">
+                    <div class="card" style="height: 264px;">
+                      <div
+                        class="card-body"
+                        style="background-color: #ffda83; height: 125.714px;"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card">
+                      <div
+                        class="card-body"
+                        style="background-color: #baee8d; height: 264px;"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card">
+                      <div
+                        class="card-body"
+                        style="background-color: #ff9798; height: 264px;"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card">
+                      <div
+                        class="card-body"
+                        style="background-color: #b3e5fc; height: 264px;"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <small style="font-family: Lato, sans-serif; font-size: 16px;"
+                  >Next Harvest: <strong>20 April</strong></small
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-7 col-lg-9">
+            <div class="card shadow mb-4">
+              <div class="card-header py-3">
+                <h6
+                  class="font-weight-bold m-0"
+                  style="
+                    color: #000000;
+                    font-family: Lato, sans-serif;
+                    font-size: 18px;
+                  "
+                >
+                  Calculator
+                </h6>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="row">
+                    <div class="col">
+                      <div
+                        class="form-group"
+                        style="padding-left: 24px; padding-top: 12px;"
+                      >
+                        <label style="font-family: lato;"
+                          ><strong>Target Concentration (ms/cm)</strong></label
+                        ><input
+                          type="text"
+                          style="margin-bottom: 12px;"
+                        /><label style="font-family: lato;"
+                          ><strong>Amount of Water (ml)</strong></label
+                        ><input type="text" />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="row"
+                    style="
+                      padding-left: 169px;
+                      padding-bottom: 18px;
+                      padding-top: 0;
+                    "
+                  >
+                    <strong id="calculate" style="font-family: lato;"
+                      >Calculate</strong
+                    >
+                  </div>
+                </div>
+                <div
+                  class="col"
+                  style="
+                    font-family: lato;
+                    padding: 0;
+                    text-align: center;
+                    padding-right: 0px;
+                    padding-left: 0px;
+                    margin-right: 32px;
+                  "
+                >
+                  <strong
+                    ><br /><br />Volume of Nutrient Required:<br /><br />-<br
+                  /></strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card shadow mb-4">
+              <div class="card-header py-3">
+                <h6
+                  class="font-weight-bold m-0"
+                  style="font-family: Lato, sans-serif; font-size: 18px;"
+                >
+                  Tank
+                </h6>
+              </div>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <div class="row align-items-center no-gutters">
+                    <div class="col mr-2">
+                      <h6 class="mb-0" style="font-family: Lato, sans-serif;">
+                        <br /><strong>EC</strong><br /><br />
+                      </h6>
+                    </div>
+                    <div class="col-auto">
+                      <strong style="font-family: lato;">1.2<br /></strong>
+                    </div>
+                  </div>
+                </li>
+                <li class="list-group-item">
+                  <div class="row align-items-center no-gutters">
+                    <div class="col mr-2">
+                      <h6 class="mb-0" style="font-family: Lato, sans-serif;">
+                        <br /><strong>Temp</strong><br /><br />
+                      </h6>
+                    </div>
+                    <div class="col-auto">
+                      <strong style="font-family: lato;">25°C<br /></strong>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-3">
+        <div class="d-sm-flex justify-content-between align-items-center mb-4">
+          <h3
+            class="text-dark mb-0"
+            style="
+              margin: 0px;
+              margin-top: 28px;
+              font-family: Lato, sans-serif;
+            "
+          >
+            <strong>Tasks</strong>
+          </h3>
+        </div>
+        <div class="row" style="margin-bottom: 16px;">
+          <div class="col">
+            <div class="card shadow border-left-info py-2">
+              <div class="card-body">
+                <div class="row align-items-center no-gutters">
+                  <div class="col mr-2">
+                    <div
+                      class="text-uppercase text-info font-weight-bold text-xs mb-1"
+                    >
+                      <span
+                        style="font-family: Lato, sans-serif; color: #b3e5fc;"
+                        >Harvest</span
+                      >
+                    </div>
+                    <div class="row no-gutters align-items-center"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" style="margin-bottom: 16px;">
+          <div class="col">
+            <div class="card shadow border-left-success py-2">
+              <div class="card-body">
+                <div class="row align-items-center no-gutters">
+                  <div class="col mr-2">
+                    <div
+                      class="text-uppercase text-success font-weight-bold text-xs mb-1"
+                    >
+                      <span
+                        style="
+                          font-family: Lato, sans-serif;
+                          color: rgb(255, 151, 152);
+                        "
+                        >Transfer</span
+                      >
+                    </div>
+                    <div class="row"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" style="margin-bottom: 16px;">
+          <div class="col">
+            <div class="card shadow border-left-primary py-2">
+              <div class="card-body">
+                <div class="row align-items-center no-gutters">
+                  <div class="col mr-2">
+                    <div
+                      class="text-uppercase text-primary font-weight-bold text-xs mb-1"
+                    >
+                      <span
+                        style="font-family: Lato, sans-serif; color: #baee8d;"
+                        >Plant</span
+                      >
+                      <div class="row"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" style="margin-bottom: 16px;">
+          <div class="col">
+            <div class="card shadow border-left-primary py-2">
+              <div class="card-body">
+                <div class="row align-items-center no-gutters">
+                  <div class="col mr-2">
+                    <div
+                      class="text-uppercase text-primary font-weight-bold text-xs mb-1"
+                    >
+                      <span
+                        style="
+                          font-family: Lato, sans-serif;
+                          color: rgb(255, 218, 131);
+                        "
+                        >Harvest</span
+                      >
+                      <div class="row"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../static/js/scripts.js"></script>
+
 {% endblock %}

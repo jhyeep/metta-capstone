@@ -10,7 +10,7 @@
 char ssid[] = SECRET_SSID;
 char pass[] = SECRET_PASS;
 
-char serverAddress[] = "192.168.1.82";  // server address
+char serverAddress[] = SERVER_ADDRESS;  // server address
 int port = 8000;
 
 float data ;
