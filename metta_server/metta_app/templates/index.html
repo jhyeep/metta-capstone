@@ -110,11 +110,17 @@
                         <label style="font-family: lato;"
                           ><strong>Target Concentration (ms/cm)</strong></label
                         ><input
-                          type="text"
+                          id="calc_conc_input"
+                          type="number"
+                          pattern="^\d*(\.\d{0,2})?$"
                           style="margin-bottom: 12px;"
                         /><label style="font-family: lato;"
                           ><strong>Amount of Water (ml)</strong></label
-                        ><input type="text" />
+                        ><input
+                          id="calc_water_input"
+                          type="number"
+                          pattern="^\d*(\.\d{0,2})?$"
+                        />
                       </div>
                     </div>
                   </div>
@@ -142,7 +148,7 @@
                     margin-right: 32px;
                   "
                 >
-                  <strong
+                  <strong id="nutrient_vol"
                     ><br /><br />Volume of Nutrient Required:<br /><br />-<br
                   /></strong>
                 </div>
