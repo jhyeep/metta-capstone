@@ -24,7 +24,7 @@ import metta_app.views as main_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('app/', include('metta_app.urls')),
-    path('app/latest_temp', main_views.latest_temp, name="latest_temp"),
+    path('app/latest_sensor_val', main_views.latest_sensor_val, name="latest_sensor_val"),
     path('new', main_views.sensorentry_new, name="sensorentry_new"),
     path('raw_data', main_views.raw_data, name="raw_data"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
