@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
 from .models import Crop, SensorEntry
+import joblib
 
 # Create your views here.
 
@@ -50,6 +51,30 @@ def raw_data(request):
 def latest_sensor_val(request):
 
     if request.is_ajax and request.method == "GET":
+
+        datetime_created = SensorEntry.objects.order_by('datetime_created').last().datetime_created
+        temp = SensorEntry.objects.order_by('datetime_created').last().temp
+        ec = SensorEntry.objects.order_by('datetime_created').last().ec
+
+        if request.GET.get('calc'):
+            target_conc = request.GET.get('target_conc')
+            water_vol = request.GET.get('water_vol')
+            nutr_vol = joblib.load('./metta_app/models/nutr_model').predict([float(temp),float(target_conc),float(water_vol)])
+            print(target_conc, water_vol, nutr_vol)
+            return JsonResponse({'nutr_vol': nutr_vol}, status=200)
+
+        return JsonResponse({
+            'datetime_created': datetime_created,
+            'temp': temp,
+            'ec': ec
+        }, status=200)
+
+
+    return JsonResponse({}, status=400)
+
+
+def calculate_vol(request):
+    if request.is_ajax and request.method == "GET":
         return JsonResponse({
             'datetime_created': SensorEntry.objects.order_by('datetime_created').last().datetime_created,
             'temp': SensorEntry.objects.order_by('datetime_created').last().temp,
@@ -57,3 +82,6 @@ def latest_sensor_val(request):
         }, status=200)
 
     return JsonResponse({}, status=400)
+
+
+

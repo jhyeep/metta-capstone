@@ -6,17 +6,17 @@ $(document).ready(function () {
 
   // Nutrient Calculator
   $("#calculate").click(function () {
-    var target_conc = parseFloat($("#calc_conc_input").val());
-    var water_vol = parseFloat($("#calc_water_input").val());
+    var target_conc = parseFloat($("#target_conc").val());
+    var water_vol = parseFloat($("#water_vol").val());
 
     $.ajax({
       type: "GET",
       url: "latest_sensor_val",
+      data: {'calc': true, 'target_conc': target_conc, 'water_vol': water_vol},
       success: function (response) {
-        var temp = response.temp;
         // console.log(response);
-        var output = target_conc + water_vol + parseFloat(temp); //change this
-        $("#nutrient_vol").text(output);
+        output = parseFloat(response.nutr_vol).toFixed(1);
+        $("#nutrient_vol").text(output + ' ml');
       },
       error: function (response) {
         console.log(response);

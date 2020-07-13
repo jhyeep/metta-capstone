@@ -110,24 +110,16 @@
                         <label style="font-family: lato;"
                           ><strong>Target Concentration (ms/cm)</strong></label
                         ><input
-                          id="calc_conc_input"
+                          id="target_conc"
                           type="number"
                           pattern="^\d*(\.\d{0,2})?$"
                           style="margin-bottom: 12px;"
                         /><label style="font-family: lato;"
                           ><strong>Amount of Water (ml)</strong></label
                         ><input
-                          id="calc_water_input"
+                          id="water_vol"
                           type="number"
                           pattern="^\d*(\.\d{0,2})?$"
-                        />
-                        <label style="font-family: lato;"
-                          ><strong>Temperature</strong></label
-                        ><input
-                          id="test_input"
-                          type="number"
-                          pattern="^\d*(\.\d{0,2})?$"
-                          style="margin-bottom: 12px;"
                         />
                       </div>
                     </div>
@@ -182,7 +174,7 @@
                       </h6>
                     </div>
                     <div class="col-auto">
-                      <strong id="ec_display" style="font-family: lato;">1.2<br /></strong>
+                      <strong id="ec_display" style="font-family: lato;">-<br /></strong>
                     </div>
                   </div>
                 </li>
@@ -194,7 +186,7 @@
                       </h6>
                     </div>
                     <div class="col-auto">
-                      <strong id="temp_display" style="font-family: lato;">25°C<br /></strong>
+                      <strong id="temp_display" style="font-family: lato;">-<br /></strong>
                     </div>
                   </div>
                 </li>
