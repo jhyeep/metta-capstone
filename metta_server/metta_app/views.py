@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
-from .models import Crop, SensorEntry
+from .models import Crop, SensorEntry, Schedule
+from datetime import date, timedelta
 import joblib
 
 # Create your views here.
@@ -38,6 +39,29 @@ def sensorentry_new(request) -> HttpResponse:
             return HttpResponse("Wrong format, "+example_hint)
 
     return HttpResponse(example_hint)
+    
+
+def scheduler(request) -> HttpResponse:
+    if request.is_ajax and request.method == "GET":
+        incoming = request.GET
+        step = int(int(incoming.get('growth_weeks'))/4)
+        seq = ['red','blue','orange','green']
+        if Schedule.objects.count() == 0:
+            for i in range(0, 2*step, step):
+                e = Schedule(week=i, date=date.today()+timedelta(i*7), to_plant=seq[int((i/step)%4)], to_transfer='blank', to_harvest='blank')
+                e.save()
+            for i in range(2*step, 4*step, step):
+                e = Schedule(week=i, date=date.today()+timedelta(i*7), to_plant=seq[int((i/step)%4)], to_transfer=seq[int(((i/step)+2)%4)], to_harvest='blank')
+                e.save()
+            for i in range(4*step, 8*step, step):
+                e = Schedule(week=i, date=date.today()+timedelta(i*7), to_plant=seq[int((i/step)%4)], to_transfer=seq[int(((i/step)+2)%4)], to_harvest=seq[int((i/step)%4)])
+                e.save()
+            return JsonResponse({}, status=200)
+        # else: 
+        #     latest_week = Schedule.objects.last().week
+        #     for i in range(latest_week, latest_week+8*step, step):
+        #         e = Schedule(week=i, date=date.today()+timedelta(i*7), to_plant=seq[int((i/step)%4)], to_transfer=seq[int(((i/step)+2)%4)], to_harvest=seq[int((i/step)%4)])
+        #         e.save()
 
 
 def raw_data(request):
@@ -56,10 +80,13 @@ def latest_sensor_val(request):
         temp = SensorEntry.objects.order_by('datetime_created').last().temp
         ec = SensorEntry.objects.order_by('datetime_created').last().ec
 
+        path = "./metta_app/models/nutr_model" # relative path for dev
+        # path = "/home/pi/Desktop/metta_server/metta_app/models/nutr_model" # path for rpi
+
         if request.GET.get('calc'):
             target_conc = request.GET.get('target_conc')
             water_vol = request.GET.get('water_vol')
-            nutr_vol = joblib.load('./metta_app/models/nutr_model').predict([float(temp),float(target_conc),float(water_vol)])
+            nutr_vol = joblib.load(path).predict([float(temp),float(target_conc),float(water_vol)])
             print(target_conc, water_vol, nutr_vol)
             return JsonResponse({'nutr_vol': nutr_vol}, status=200)
 
@@ -72,16 +99,6 @@ def latest_sensor_val(request):
 
     return JsonResponse({}, status=400)
 
-
-def calculate_vol(request):
-    if request.is_ajax and request.method == "GET":
-        return JsonResponse({
-            'datetime_created': SensorEntry.objects.order_by('datetime_created').last().datetime_created,
-            'temp': SensorEntry.objects.order_by('datetime_created').last().temp,
-            'ec': SensorEntry.objects.order_by('datetime_created').last().ec
-        }, status=200)
-
-    return JsonResponse({}, status=400)
 
 
 

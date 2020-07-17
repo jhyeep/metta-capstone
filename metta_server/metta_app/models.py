@@ -9,7 +9,13 @@ class Crop(models.Model):
 
 class SensorEntry(models.Model):
     datetime_created = models.DateTimeField(auto_now_add=True)
-    sensor_id = models.TextField()
-    # data = models.TextField()
+    sensor_id = models.TextField() #unused for now
     ec = models.TextField()
     temp = models.TextField()
+
+class Schedule(models.Model):
+    week = models.IntegerField()
+    date = models.DateField()
+    to_plant = models.TextField()
+    to_transfer = models.TextField()
+    to_harvest = models.TextField()

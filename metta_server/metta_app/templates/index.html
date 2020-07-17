@@ -29,7 +29,7 @@
               text-align: center;
               background-color: #ffffff;
               color: rgb(0, 0, 0);
-              font-family: lato;
+              font-family: Lato, sans-serif;
               font-size: 18px;
               margin-top: 24px;
             "
@@ -43,10 +43,10 @@
               <div class="card-body">
                 <div class="row">
                   <div class="col">
-                    <div class="card" style="height: 264px;">
+                    <div class="card">
                       <div
                         class="card-body"
-                        style="background-color: #ffda83; height: 125.714px;"
+                        style="background-color: #ffda83; height: 180px;"
                       ></div>
                     </div>
                   </div>
@@ -54,7 +54,7 @@
                     <div class="card">
                       <div
                         class="card-body"
-                        style="background-color: #baee8d; height: 264px;"
+                        style="background-color: #ff9798; height: 180px;"
                       ></div>
                     </div>
                   </div>
@@ -62,7 +62,7 @@
                     <div class="card">
                       <div
                         class="card-body"
-                        style="background-color: #ff9798; height: 264px;"
+                        style="background-color: #b3e5fc; height: 180px;"
                       ></div>
                     </div>
                   </div>
@@ -70,22 +70,53 @@
                     <div class="card">
                       <div
                         class="card-body"
-                        style="background-color: #b3e5fc; height: 264px;"
+                        style="background-color: #baee8d; height: 180px;"
                       ></div>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="card-footer">
-                <small style="font-family: Lato, sans-serif; font-size: 16px;"
-                  >Next Harvest: <strong>20 April</strong></small
-                >
+                <div class="row">
+                  <div class="col-sm-8">
+                    <small
+                      style="font-family: Lato, sans-serif; font-size: 18px;"
+                      >Next Harvest: <strong>20 April</strong></small
+                    >
+                  </div>
+                  <div class="col" style="text-align: right;">
+                    <small
+                      style="
+                        font-family: Lato, sans-serif;
+                        font-size: 18px;
+                        margin-right: 16px;
+                      "
+                      >Stop<br
+                    /></small>
+                  </div>
+                  <div
+                    class="col"
+                    style="
+                      text-align: right;
+                      padding: 0px;
+                      padding-right: 0px;
+                      margin: -0px;
+                      margin-right: 16px;
+                    "
+                  >
+                    <small
+                      class="text-left"
+                      style="font-family: Lato, sans-serif; font-size: 18px;"
+                      >Restart<br
+                    /></small>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
         <div class="row">
-          <div class="col-md-7 col-lg-9">
+          <div class="col-sm-9">
             <div class="card shadow mb-4">
               <div class="card-header py-3">
                 <h6
@@ -107,20 +138,39 @@
                         class="form-group"
                         style="padding-left: 24px; padding-top: 12px;"
                       >
-                        <label style="font-family: lato;"
-                          ><strong>Target Concentration (ms/cm)</strong></label
-                        ><input
-                          id="target_conc"
-                          type="number"
-                          pattern="^\d*(\.\d{0,2})?$"
-                          style="margin-bottom: 12px;"
-                        /><label style="font-family: lato;"
-                          ><strong>Amount of Water (ml)</strong></label
-                        ><input
-                          id="water_vol"
-                          type="number"
-                          pattern="^\d*(\.\d{0,2})?$"
-                        />
+                        <div class="row">
+                          <div class="col">
+                            <label style="font-family: Lato, sans-serif;"
+                              ><strong>Target Conc. (ms/cm)</strong></label
+                            >
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col">
+                            <input
+                              id="target_conc"
+                              type="number"
+                              pattern="^\d*(\.\d{0,2})?$"
+                              style="margin-bottom: 12px;"
+                            />
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col">
+                            <label style="font-family: Lato, sans-serif;"
+                              ><strong>Amount of Water (ml)</strong></label
+                            >
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col">
+                            <input
+                              id="water_vol"
+                              type="number"
+                              pattern="^\d*(\.\d{0,2})?$"
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -132,25 +182,38 @@
                       padding-top: 0;
                     "
                   >
-                    <strong id="calculate" style="font-family: lato;"
+                    <strong
+                      id="calculate"
+                      style="font-family: Lato, sans-serif;"
                       >Calculate</strong
                     >
                   </div>
                 </div>
-                <div
+                <!-- <div
                   class="col"
                   style="
-                    font-family: lato;
+                    font-family: Lato, sans-serif;
                     padding: 0;
                     text-align: center;
                     padding-right: 0px;
                     padding-left: 0px;
                     margin-right: 32px;
                   "
+                > -->
+                <div
+                  class="col"
+                  style="
+                    font-family: Lato, sans-serif;
+                    padding: 0px 12px;
+                    text-align: center;
+                    padding-right: 12px;
+                    padding-left: 12px;
+                    margin-right: 24px;
+                  "
                 >
-                  <strong id="nutrient_vol"
-                    ><br /><br />Volume of Nutrient Required:<br /><br />-<br
-                  /></strong>
+                  <strong
+                    ><br /><br />Volume of Nutrient Required:<br /><br /></strong
+                  ><strong id="nutr_vol">-</strong>
                 </div>
               </div>
             </div>
@@ -174,7 +237,11 @@
                       </h6>
                     </div>
                     <div class="col-auto">
-                      <strong id="ec_display" style="font-family: lato;">-<br /></strong>
+                      <strong
+                        id="ec_display"
+                        style="font-family: Lato, sans-serif;"
+                        >-<br
+                      /></strong>
                     </div>
                   </div>
                 </li>
@@ -186,7 +253,11 @@
                       </h6>
                     </div>
                     <div class="col-auto">
-                      <strong id="temp_display" style="font-family: lato;">-<br /></strong>
+                      <strong
+                        id="temp_display"
+                        style="font-family: Lato, sans-serif;"
+                        >-<br
+                      /></strong>
                     </div>
                   </div>
                 </li>
@@ -195,7 +266,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-4 col-lg-3">
+      <div class="col-sm-3 col-md-3">
         <div class="d-sm-flex justify-content-between align-items-center mb-4">
           <h3
             class="text-dark mb-0"

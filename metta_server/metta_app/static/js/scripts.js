@@ -1,7 +1,20 @@
 $(document).ready(function () {
   // Growth Period Input
   $("#growth_period_input").click(function () {
-    alert("hello");
+    $.ajax({
+      type: "GET",
+      url: "scheduler",
+      data: {'growth_weeks': 8},
+      success: function (response) {
+        // console.log(response);
+        // output = parseFloat(response.nutr_vol).toFixed(1);
+        // $("#nutr_vol").text(output + ' ml');
+        alert(response)
+      },
+      error: function (response) {
+        console.log(response);
+      },
+    });
   });
 
   // Nutrient Calculator
@@ -16,7 +29,7 @@ $(document).ready(function () {
       success: function (response) {
         // console.log(response);
         output = parseFloat(response.nutr_vol).toFixed(1);
-        $("#nutrient_vol").text(output + ' ml');
+        $("#nutr_vol").text(output + ' ml');
       },
       error: function (response) {
         console.log(response);
