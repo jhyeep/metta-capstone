@@ -23,7 +23,7 @@
           <button
             class="btn btn-primary btn-lg text-center border-white shadow d-none d-sm-inline-block"
             type="button"
-            id="growth_period_input"
+            id="growth_period_button"
             style="
               border-radius: 24px;
               text-align: center;
@@ -34,7 +34,7 @@
               margin-top: 24px;
             "
           >
-            Growth Period: <strong>4 weeks </strong>
+            Growth Period: <strong id='growth_weeks'>4 weeks </strong>
           </button>
         </div>
         <div class="row">
@@ -42,40 +42,50 @@
             <div class="card shadow mb-4">
               <div class="card-body">
                 <div class="row">
-                  <div class="col">
-                    <div class="card">
-                      <div
-                        class="card-body"
-                        style="background-color: #ffda83; height: 180px;"
-                      ></div>
+                    <div class="col-lg-4">
+                        <div class="card-group">
+                            <div class="card" style="border: none;">
+                                <div class="card-body text-center tray1" style="background-color: #E8E9EC;height: 180px;width: 40px;margin:0 auto"></div>
+                            </div>
+                            <div class="card" style="border: none;">
+                                <div class="card-body text-center tray1" style="background-color: #E8E9EC;height: 180px;width: 40px;margin:0 auto"></div>
+                            </div>
+                            <div class="card" style="border: none;">
+                                <div class="card-body text-center tray1" style="background-color: #E8E9EC;height: 180px;width: 40px;margin:0 auto"></div>
+                            </div>
+                            <div class="card" style="border: none;">
+                                <div class="card-body text-center tray1" style="background-color: #E8E9EC;height: 180px;width: 40px;margin:0 auto"></div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  <div class="col">
-                    <div class="card">
-                      <div
-                        class="card-body"
-                        style="background-color: #ff9798; height: 180px;"
-                      ></div>
+                    <div class="col-lg-2 offset-lg-0">
+                        <div class="card" style="border: none;margin: 0 auto;">
+                            <div class="card-body tray2" style="background-color: #E8E9EC;height: 180px;margin: 0 auto;padding: 20px;width: 80px;"></div>
+                        </div>
                     </div>
-                  </div>
-                  <div class="col">
-                    <div class="card">
-                      <div
-                        class="card-body"
-                        style="background-color: #b3e5fc; height: 180px;"
-                      ></div>
+                    <div class="col-lg-2">
+                        <div class="card" style="border: none;">
+                            <div class="card-body tray3" style="background-color: #E8E9EC;height: 180px;margin: 0 auto;width: 80px;"></div>
+                        </div>
                     </div>
-                  </div>
-                  <div class="col">
-                    <div class="card">
-                      <div
-                        class="card-body"
-                        style="background-color: #baee8d; height: 180px;"
-                      ></div>
+                    <div class="col-lg-4">
+                        <div class="card-group">
+                            <div class="card" style="border: none;">
+                                <div class="card-body tray4" style="background-color: #E8E9EC;height: 180px;width: 40px;margin: 0 auto;"></div>
+                            </div>
+                            <div class="card" style="border: none;">
+                                <div class="card-body tray4" style="background-color: #E8E9EC;height: 180px;width: 40px;margin: 0 auto;"></div>
+                            </div>
+                            <div class="card" style="border: none;">
+                                <div class="card-body tray4" style="background-color: #E8E9EC;height: 180px;width: 40px;margin: 0 auto;"></div>
+                            </div>
+                            <div class="card" style="border: none;">
+                                <div class="card-body tray4" style="background-color: #E8E9EC;height: 180px;width: 40px;margin: 0 auto;"></div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
                 </div>
-              </div>
+            </div>
               <div class="card-footer">
                 <div class="row">
                   <div class="col-sm-8">
@@ -279,96 +289,7 @@
             <strong>Tasks</strong>
           </h3>
         </div>
-        <div class="row" style="margin-bottom: 16px;">
-          <div class="col">
-            <div class="card shadow border-left-info py-2">
-              <div class="card-body">
-                <div class="row align-items-center no-gutters">
-                  <div class="col mr-2">
-                    <div
-                      class="text-uppercase text-info font-weight-bold text-xs mb-1"
-                    >
-                      <span
-                        style="font-family: Lato, sans-serif; color: #b3e5fc;"
-                        >Harvest</span
-                      >
-                    </div>
-                    <div class="row no-gutters align-items-center"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row" style="margin-bottom: 16px;">
-          <div class="col">
-            <div class="card shadow border-left-success py-2">
-              <div class="card-body">
-                <div class="row align-items-center no-gutters">
-                  <div class="col mr-2">
-                    <div
-                      class="text-uppercase text-success font-weight-bold text-xs mb-1"
-                    >
-                      <span
-                        style="
-                          font-family: Lato, sans-serif;
-                          color: rgb(255, 151, 152);
-                        "
-                        >Transfer</span
-                      >
-                    </div>
-                    <div class="row"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row" style="margin-bottom: 16px;">
-          <div class="col">
-            <div class="card shadow border-left-primary py-2">
-              <div class="card-body">
-                <div class="row align-items-center no-gutters">
-                  <div class="col mr-2">
-                    <div
-                      class="text-uppercase text-primary font-weight-bold text-xs mb-1"
-                    >
-                      <span
-                        style="font-family: Lato, sans-serif; color: #baee8d;"
-                        >Plant</span
-                      >
-                      <div class="row"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row" style="margin-bottom: 16px;">
-          <div class="col">
-            <div class="card shadow border-left-primary py-2">
-              <div class="card-body">
-                <div class="row align-items-center no-gutters">
-                  <div class="col mr-2">
-                    <div
-                      class="text-uppercase text-primary font-weight-bold text-xs mb-1"
-                    >
-                      <span
-                        style="
-                          font-family: Lato, sans-serif;
-                          color: rgb(255, 218, 131);
-                        "
-                        >Harvest</span
-                      >
-                      <div class="row"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div id="task_col" style="position:fixed;height: 100%;overflow: auto"></div>
       </div>
     </div>
   </div>

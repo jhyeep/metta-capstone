@@ -19,3 +19,10 @@ class Schedule(models.Model):
     to_plant = models.TextField()
     to_transfer = models.TextField()
     to_harvest = models.TextField()
+
+class TrayState(models.Model):
+    date = models.DateField()
+    tray1 = models.TextField()
+    tray2 = models.TextField()
+    tray3 = models.TextField()
+    tray4 = models.TextField()
