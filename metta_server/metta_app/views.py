@@ -178,7 +178,6 @@ def raw_data(request):
     context = {}
     all_data = SensorEntry.objects.all()
     context["all"] = all_data
-    print(SensorEntry.objects.order_by('datetime_created').last().temp)
     return render(request, "raw_data.html", context)
 
 

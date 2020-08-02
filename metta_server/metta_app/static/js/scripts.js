@@ -6,14 +6,12 @@ $(document).ready(function () {
 
   // Growth Period Input, creates entries in database
   $("#growth_period_button").click(function () {
-    growth_period = (
-      window.prompt(
-        "Enter the estimated growth period (in weeks) for the plant:",
-        4
-      )
+    growth_period = window.prompt(
+      "Enter the estimated growth period (in weeks) for the plant:",
+      4
     );
 
-    if (growth_period == null || growth_period == '') return;
+    if (growth_period == null || growth_period == "") return;
 
     $("#growth_weeks").text(growth_period + " weeks");
     $.ajax({
@@ -23,56 +21,34 @@ $(document).ready(function () {
       success: function (response) {
         get_and_generate_tasks();
         activate_trays();
-        set_next_harvest(); 
-        console.log(response);
+        set_next_harvest();
       },
       error: function (response) {
         console.log(response);
       },
     });
+  });
 
-
-
-    // $.ajax({
-    //   type: "GET",
-    //   url: "tray_state",
-    //   data: {new: true},
-    //   success: function (response) {
-    //     set_tray_color('tray1', response.tray1);
-    //     set_tray_color('tray2', response.tray2);
-    //     set_tray_color('tray3', response.tray3);
-    //     set_tray_color('tray4', response.tray4);
-    //     console.log(response);
-    //   },
-    //   error: function (response) {
-    //     console.log(response);
-    //   },
-    
-    });
-
-
-    //restart cycle, following previous growth period input
-    $("#restart_button").click(function () {
-      if (confirm("Reset all trays/tasks?")){
-        $.ajax({
-          type: "GET",
-          url: "scheduler",
-          data: { restart: true },
-          success: function (response) {
-            get_and_generate_tasks();
-            activate_trays();
-            set_next_harvest(); 
-            console.log(response);
-          },
-          error: function (response) {
-            console.log(response);
-          },
-        });
-      } else {
-        return;
-      }
-    });
-  
+  //restart cycle, following previous growth period input
+  $("#restart_button").click(function () {
+    if (confirm("Reset all trays/tasks?")) {
+      $.ajax({
+        type: "GET",
+        url: "scheduler",
+        data: { restart: true },
+        success: function (response) {
+          get_and_generate_tasks();
+          activate_trays();
+          set_next_harvest();
+        },
+        error: function (response) {
+          console.log(response);
+        },
+      });
+    } else {
+      return;
+    }
+  });
 
   // Nutrient Calculator
   $("#calculate").click(function () {
@@ -85,7 +61,6 @@ $(document).ready(function () {
       url: "latest_sensor_val",
       data: { calc: true, target_conc: target_conc, water_vol: water_vol },
       success: function (response) {
-        // console.log(response);
         output = parseFloat(response.nutr_vol).toFixed(1);
         $("#nutr_vol").text(output + " ml");
       },
@@ -101,7 +76,6 @@ $(document).ready(function () {
       type: "GET",
       url: "latest_sensor_val",
       success: function (response) {
-        // console.log(response);
         $("#temp_display").text(response.temp);
         $("#ec_display").text(response.ec);
       },
@@ -109,8 +83,6 @@ $(document).ready(function () {
         console.log(response);
       },
     });
-
-    // activate_trays();
   };
 
   var interval = 3000; // 3 secs
@@ -118,12 +90,7 @@ $(document).ready(function () {
 
   var hourly_interval = 3600000; // 1 hour
   setInterval(get_and_generate_tasks(), hourly_interval);
-
-
 });
-
-
-
 
 /*
 FUNCTIONS
@@ -150,12 +117,11 @@ function set_tray_color(tray_class, color) {
 }
 
 //gets tray state from database and sets trays in html
-function activate_trays(){
+function activate_trays() {
   $.ajax({
     type: "GET",
     url: "tray_state",
     success: function (response) {
-      //make this into a function maybe
       set_tray_color("tray1", response.tray1);
       set_tray_color("tray2", response.tray2);
       set_tray_color("tray3", response.tray3);
@@ -166,7 +132,6 @@ function activate_trays(){
     },
   });
 }
-
 
 // Adds singular task card
 function add_task(task, tray, color, due_date, first = false) {
@@ -222,24 +187,30 @@ function add_task(task, tray, color, due_date, first = false) {
   html +=
     '<div class="card-footer"> <div class="row text-right"> <div class="col" style="height: 26.8571px">';
   var now = new Date();
-  var task_date = new Date(due_date).setHours(0,0,0,0);
+  var task_date = new Date(due_date).setHours(0, 0, 0, 0);
   var time_diff = Math.abs(task_date - now);
-  var hours_diff = Math.ceil(time_diff/(1000*60*60));
-  var days_diff = Math.ceil(time_diff/(1000*60*60*24));
-  console.log(now);
-  console.log(task_date);
-  console.log(hours_diff + ' hours')
+  var hours_diff = Math.ceil(time_diff / (1000 * 60 * 60));
+  var days_diff = Math.ceil(time_diff / (1000 * 60 * 60 * 24));
 
-  if (first && now > task_date){
-    html += '<i class="material-icons" style="vertical-align: text-bottom">delete</i><span id="clear_task_button" style="font-family: Lato, sans-serif;font-size: 18px;"> Clear </span>';
-  } 
-  else if (days_diff == 1){
-    plural = hours_diff > 1 ? 's' : '';
-    html += '<span style="font-family: Lato, sans-serif;font-size: 18px;"><em> In ' + hours_diff + ' hour' + plural + ' </em></span>';
-  }
-  else {
-    plural = days_diff > 1 ? 's' : '';
-    html += '<span style="font-family: Lato, sans-serif;font-size: 18px;"><em> In ' + days_diff + ' day' + plural + ' </em></span>';
+  if (first && now > task_date) {
+    html +=
+      '<i class="material-icons" style="vertical-align: text-bottom">delete</i><span id="clear_task_button" style="font-family: Lato, sans-serif;font-size: 18px;"> Clear </span>';
+  } else if (days_diff == 1) {
+    plural = hours_diff > 1 ? "s" : "";
+    html +=
+      '<span style="font-family: Lato, sans-serif;font-size: 18px;"><em> In ' +
+      hours_diff +
+      " hour" +
+      plural +
+      " </em></span>";
+  } else {
+    plural = days_diff > 1 ? "s" : "";
+    html +=
+      '<span style="font-family: Lato, sans-serif;font-size: 18px;"><em> In ' +
+      days_diff +
+      " day" +
+      plural +
+      " </em></span>";
   }
   html += "</div> </div> </div> </div>";
 
@@ -253,11 +224,9 @@ function get_and_generate_tasks() {
     url: "scheduler",
     success: function (response) {
       $("#task_col").empty();
-      console.log(response.data);
       for (let i = 0; i < response.data.length; i++) {
         e = response.data[i];
         let flag = i == 0 ? true : false;
-        console.log(e);
 
         if (e.to_harvest != "blank") {
           if (e.to_harvest == "red" || e.to_harvest == "orange") {
@@ -292,11 +261,18 @@ function get_and_generate_tasks() {
       //enable task 'clear' button
       setTimeout(function () {
         $("#clear_task_button").click(function () {
-          $("#clear_task_button").css("color", '#85879650');
-          $("#clear_task_button").off('click');
-          if (response.data[0].to_harvest != 'blank') { complete_task('harvest', response.data[0].to_harvest); console.log('harvest clear')}
-          else if (response.data[0].to_transfer != 'blank') { complete_task('transfer', response.data[0].to_transfer); console.log('transfer clear')}
-          else if (response.data[0].to_plant != 'blank') { complete_task('plant', response.data[0].to_plant); console.log('plant clear')}
+          $("#clear_task_button").css("color", "#85879650");
+          $("#clear_task_button").off("click");
+          if (response.data[0].to_harvest != "blank") {
+            complete_task("harvest", response.data[0].to_harvest);
+            // console.log("harvest clear");
+          } else if (response.data[0].to_transfer != "blank") {
+            complete_task("transfer", response.data[0].to_transfer);
+            // console.log("transfer clear");
+          } else if (response.data[0].to_plant != "blank") {
+            complete_task("plant", response.data[0].to_plant);
+            // console.log("plant clear");
+          }
         });
       }, 2);
     },
@@ -305,9 +281,6 @@ function get_and_generate_tasks() {
     },
   });
 }
-
-
-
 
 //sets task as completed in database, calls get_and_generate_tasks() to recreate cards
 function complete_task(task_type) {
@@ -327,16 +300,14 @@ function complete_task(task_type) {
   });
 }
 
-
 //get next harvest date
-function set_next_harvest(){
+function set_next_harvest() {
   $.ajax({
     type: "GET",
     url: "scheduler",
     data: { next_harvest: true },
     success: function (response) {
       $("#next_harvest").text(response.date);
-      console.log(response);
     },
     error: function (response) {
       console.log(response);
