@@ -188,7 +188,7 @@ def latest_sensor_val(request):
         # path = "/home/pi/Desktop/metta_server/metta_app/models/nutr_model" # path for rpi
 
 
-        # nutrient vol calculator
+        # nutrient vol calculator (machine learning)
         incoming = request.GET
         if incoming.get('calc'):
             target_conc = incoming.get('target_conc')
