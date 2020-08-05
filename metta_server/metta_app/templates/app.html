@@ -8,7 +8,7 @@
 <div id="content">
   <div class="container-fluid">
     <div class="row" style="margin: 0px;">
-      <div class="col">
+      <div class="col" style="margin-left: -24px">
         <div class="d-sm-flex justify-content-between align-items-center mb-4">
           <h3
             class="text-dark mb-0"
@@ -34,15 +34,27 @@
               margin-top: 24px;
             "
           >
-            Growth Period: <strong id="growth_weeks">4 weeks </strong>
+            Growth Period: <strong id="growth_weeks">- weeks </strong>
           </button>
         </div>
         <div class="row">
           <div class="col">
             <div class="card shadow mb-4">
               <div class="card-body">
+                <!-- <div class="row" style="margin-bottom: 12px;">
+                  <div class="col-sm-4" style="text-align: center"><img id="tray1_plant" src="../static/images/plant.png" style="width: 30px;height: 30px;" /></div>
+                  <div class="col-sm-2" style="text-align: center"><img id="tray2_plant" src="../static/images/seedling.png" style="width: 30px;height: 30px;" /></div>
+                  <div class="col-sm-2" style="text-align: center"><img id="tray3_plant" src="../static/images/seed.png" style="width: 30px;height: 30px;" /></div>
+                  <div class="col-sm-4" style="text-align: center"><img id="tray4_plant" src="../static/images/seedling.png" style="width: 30px;height: 30px;" /></div>
+                </div> -->
+                <div class="row" style="margin-bottom: 8px;">
+                  <div class="col-sm-4" style="text-align: center"><strong style="color: #858796;font-family: Lato, sans-serif;font-size: 24px;">1</strong></div>
+                  <div class="col-sm-2" style="text-align: center"><strong style="color: #858796;font-family: Lato, sans-serif;font-size: 24px;">2</strong></div>
+                  <div class="col-sm-2" style="text-align: center"><strong style="color: #858796;font-family: Lato, sans-serif;font-size: 24px;">3</strong></div>
+                  <div class="col-sm-4" style="text-align: center"><strong style="color: #858796;font-family: Lato, sans-serif;font-size: 24px;">4</strong></div>
+              </div>
                 <div class="row">
-                  <div class="col-lg-4">
+                  <div class="col-sm-4">
                     <div class="card-group">
                       <div class="card" style="border: none;">
                         <div
@@ -90,7 +102,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-lg-2 offset-lg-0">
+                  <div class="col-sm-2 offset-lg-0">
                     <div class="card" style="border: none; margin: 0 auto;">
                       <div
                         class="card-body tray2"
@@ -104,7 +116,7 @@
                       ></div>
                     </div>
                   </div>
-                  <div class="col-lg-2">
+                  <div class="col-sm-2">
                     <div class="card" style="border: none;">
                       <div
                         class="card-body tray3"
@@ -117,7 +129,7 @@
                       ></div>
                     </div>
                   </div>
-                  <div class="col-lg-4">
+                  <div class="col-sm-4">
                     <div class="card-group">
                       <div class="card" style="border: none;">
                         <div
@@ -235,15 +247,15 @@
                       >
                         <div class="row">
                           <div class="col">
-                            <label style="font-family: Lato, sans-serif;"
-                              ><strong>Target Conc. (ms/cm)</strong></label
+                            <label style="font-family: Lato, sans-serif;padding-bottom: 1px;"
+                              ><strong>Water Volume (l): </strong></label
                             >
                           </div>
                         </div>
                         <div class="row">
                           <div class="col">
                             <input
-                              id="target_conc"
+                              id="water_vol"
                               type="number"
                               pattern="^\d*(\.\d{0,2})?$"
                               style="margin-bottom: 12px;"
@@ -252,15 +264,15 @@
                         </div>
                         <div class="row">
                           <div class="col">
-                            <label style="font-family: Lato, sans-serif;"
-                              ><strong>Amount of Water (ml)</strong></label
+                            <label style="font-family: Lato, sans-serif;padding-bottom: 1px;"
+                              ><strong>Current EC: </strong></label
                             >
                           </div>
                         </div>
                         <div class="row">
                           <div class="col">
                             <input
-                              id="water_vol"
+                              id="ec_calc"
                               type="number"
                               pattern="^\d*(\.\d{0,2})?$"
                             />
@@ -314,18 +326,19 @@
                   style="font-family: Lato, sans-serif; font-size: 18px;"
                 >
                   Tank
+                  <i class="material-icons" id="no_wifi" style="color: #858796;;vertical-align: text-bottom;margin-left: 48px;display:none">signal_wifi_off</i>
                 </h6>
               </div>
               <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                   <div class="row align-items-center no-gutters">
-                    <div class="col-lg-4 offset-lg-0">
+                    <div class="col-sm-4 offset-lg-0">
                       <img
                         src="../static/images/waterdrop.png"
                         style="width: 40px; height: 40px; margin-left: -6px;"
                       />
                     </div>
-                    <div class="col-auto col-lg-4" style="text-align: center;">
+                    <div class="col-auto col-sm-4" style="text-align: center;">
                       <strong
                         id="ec_display"
                         style="
@@ -336,7 +349,7 @@
                         >-<br
                       /></strong>
                     </div>
-                    <div class="col-lg-3 mr-2">
+                    <div class="col-sm-2 mr-2">
                       <h6
                         class="mb-0"
                         style="
@@ -349,17 +362,19 @@
                       </h6>
                     </div>
                   </div>
+                  <div class="row">
+                    <div class="col" style="text-align: center;margin-top: -6px;margin-bottom: 5px;"><span id="ec_ok" style="font-family: Lato, sans-serif;"></span></div>
+                   </div>
                 </li>
                 <li class="list-group-item">
                   <div class="row align-items-center no-gutters">
-                    <div class="col-lg-4 offset-lg-0">
+                    <div class="col-sm-4 offset-lg-0">
                       <img
                         src="../static/images/temperature.png"
                         style="width: 40px; height: 40px; margin-left: -6px;"
-                        src="temperature.png"
                       />
                     </div>
-                    <div class="col-auto col-lg-4" style="text-align: center;">
+                    <div class="col-auto col-sm-4" style="text-align: center;">
                       <strong
                         id="temp_display"
                         style="
@@ -370,7 +385,7 @@
                         >-<br
                       /></strong>
                     </div>
-                    <div class="col-lg-2 mr-2">
+                    <div class="col-sm-2 mr-2">
                       <h6
                         class="mb-0"
                         style="
@@ -383,6 +398,9 @@
                       </h6>
                     </div>
                   </div>
+                  <div class="row">
+                    <div class="col" style="text-align: center;margin-top: -6px;margin-bottom: 5px;"><span id="temp_ok" style="font-family: Lato, sans-serif;"></span></div>
+                   </div>
                 </li>
               </ul>
             </div>

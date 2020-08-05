@@ -7,13 +7,12 @@ $(document).ready(function () {
   // Growth Period Input, creates entries in database
   $("#growth_period_button").click(function () {
     growth_period = window.prompt(
-      "Enter the estimated growth period (in weeks) for the plant:",
+      "Enter the estimated growth period (in weeks) for the plant, minimum 4:",
       4
     );
 
     if (growth_period == null || growth_period == "") return;
 
-    $("#growth_weeks").text(growth_period + " weeks");
     $.ajax({
       type: "GET",
       url: "scheduler",
@@ -52,22 +51,27 @@ $(document).ready(function () {
 
   // Nutrient Calculator
   $("#calculate").click(function () {
-    var target_conc = parseFloat($("#target_conc").val());
+    var ec_calc = parseFloat($("#ec_calc").val());
     var water_vol = parseFloat($("#water_vol").val());
-    $("#nutr_vol").text("Loading...");
+    // $("#nutr_vol").text("Loading...");
 
-    $.ajax({
-      type: "GET",
-      url: "latest_sensor_val",
-      data: { calc: true, target_conc: target_conc, water_vol: water_vol },
-      success: function (response) {
-        output = parseFloat(response.nutr_vol).toFixed(1);
-        $("#nutr_vol").text(output + " ml");
-      },
-      error: function (response) {
-        console.log(response);
-      },
-    });
+    // $.ajax({
+    //   type: "GET",
+    //   url: "latest_sensor_val",
+    //   data: { calc: true, target_conc: target_conc, water_vol: water_vol },
+    //   success: function (response) {
+    //     output = parseFloat(response.nutr_vol).toFixed(1);
+    //     $("#nutr_vol").text(output + " ml");
+    //   },
+    //   error: function (response) {
+    //     console.log(response);
+    //   },
+    // });
+
+    var output = (0.02 * water_vol*1000) - ((ec_calc/2) * 0.02)*water_vol*1000;
+    (output > 0) ? $("#nutr_vol").text(output + " ml") : $("#nutr_vol").text("0 ml");
+    
+
   });
 
   // Realtime EC/Temp Display + Tray States
@@ -76,8 +80,44 @@ $(document).ready(function () {
       type: "GET",
       url: "latest_sensor_val",
       success: function (response) {
-        $("#temp_display").text(response.temp);
-        $("#ec_display").text(response.ec);
+
+        var now = new Date();
+        var last_updated = new Date(response.datetime_created);
+        var expired = Math.abs(now - last_updated) > 300000;
+        // console.log(Math.abs(now - last_updated));
+        // console.log(last_updated)
+        // console.log(now)
+        if (expired) {
+          $("#temp_display").text('??');
+          $("#ec_display").text('??');
+          $("#no_wifi").show();
+        } else {
+          $("#temp_display").text(response.temp);
+          $("#ec_display").text(response.ec);
+          $("#no_wifi").hide();
+        }
+
+        if (!expired && parseFloat(response.ec) < 1.5) {
+          $("#ec_ok").text('LOW');
+          $("#ec_ok").css("color", color_to_hex('red'));
+        } else if (!expired && parseFloat(response.ec) > 2.5){
+          $("#ec_ok").text('HIGH');
+          $("#ec_ok").css("color", color_to_hex('red'));
+        } else if (!expired){
+          $("#ec_ok").text('OK');
+          $("#ec_ok").css("color", '#51c528');
+        }
+
+        if (!expired && parseFloat(response.temp) < 20) {
+          $("#temp_ok").text('LOW');
+          $("#temp_ok").css("color", color_to_hex('red'));
+        } else if (!expired && parseFloat(response.temp) > 35){
+          $("#temp_ok").text('HIGH');
+          $("#temp_ok").css("color", color_to_hex('red'));
+        } else if (!expired){
+          $("#temp_ok").text('OK');
+          $("#temp_ok").css("color", '#51c528');
+        }
       },
       error: function (response) {
         console.log(response);
@@ -90,6 +130,7 @@ $(document).ready(function () {
 
   var hourly_interval = 3600000; // 1 hour
   setInterval(get_and_generate_tasks(), hourly_interval);
+  setInterval(activate_trays(), hourly_interval);
 });
 
 /*
@@ -116,16 +157,38 @@ function set_tray_color(tray_class, color) {
   $("." + tray_class).css("background-color", color);
 }
 
-//gets tray state from database and sets trays in html
+function set_tray_stage(tray_class, stage) {
+  $('#' + tray_class + '_plant').attr("src", "../static/images/" + stage + ".png");
+}
+
+//gets tray state from database and sets trays in html. Also changes growth period input text
 function activate_trays() {
   $.ajax({
     type: "GET",
     url: "tray_state",
     success: function (response) {
       set_tray_color("tray1", response.tray1);
+
       set_tray_color("tray2", response.tray2);
+
       set_tray_color("tray3", response.tray3);
+
       set_tray_color("tray4", response.tray4);
+
+      //growth state images
+      $.ajax({
+        type: "GET",
+        url: "scheduler",
+        success: function (response) {
+          last_growth_period = 4 * (parseInt(response.data[1].week) - parseInt(response.data[0].week));
+          $("#growth_weeks").text(last_growth_period + " weeks");
+          //set tray state code further implementation
+
+        },
+        error: function (response) {
+          console.log(response);
+        },
+      });
     },
     error: function (response) {
       console.log(response);
@@ -154,13 +217,13 @@ function add_task(task, tray, color, due_date, first = false) {
 
   html =
     '<div class="card shadow mb-4"> <div class="card-header py-3"> <h6 class="font-weight-bold m-0" style="font-family: Lato, sans-serif;font-size: 18px;">' +
-    task +
+    task + ' (' + tray + ')' +
     '</h6> </div> <div class="card-body"> <div class="row"> <div class="col"> <div class="text-uppercase text-info font-weight-bold text-xs mb-1"></div> </div> </div> <div class="row">';
 
   //trays in card
   for (i = 1; i <= 4; i++) {
     html +=
-      '<div class="col-lg-3"> <div class="card"> <div class="card-body" style="background-color: ';
+      '<div class="col-sm-3"> <div class="card"> <div class="card-body" style="background-color: ';
     i == tray ? (html += color) : (html += "#E8E9EC");
     html += ';padding: 10px;height: 54px;"></div> </div> </div> ';
   }
@@ -192,9 +255,15 @@ function add_task(task, tray, color, due_date, first = false) {
   var hours_diff = Math.ceil(time_diff / (1000 * 60 * 60));
   var days_diff = Math.ceil(time_diff / (1000 * 60 * 60 * 24));
 
+  // first ? 
+  // html +=
+  //     '<i class="material-icons" style="vertical-align: text-bottom">delete</i><span id="clear_task_button" style="font-family: Lato, sans-serif;font-size: 18px;"> Clear </span>' 
+  //     : html += ''
+  
+  // if (first) {
   if (first && now > task_date) {
     html +=
-      '<i class="material-icons" style="vertical-align: text-bottom">delete</i><span id="clear_task_button" style="font-family: Lato, sans-serif;font-size: 18px;"> Clear </span>';
+      '<i class="material-icons" style="color: #858796;vertical-align: text-bottom">delete</i><span id="clear_task_button" style="font-family: Lato, sans-serif;font-size: 18px;"> Clear </span>';
   } else if (days_diff == 1) {
     plural = hours_diff > 1 ? "s" : "";
     html +=
@@ -212,6 +281,7 @@ function add_task(task, tray, color, due_date, first = false) {
       plural +
       " </em></span>";
   }
+
   html += "</div> </div> </div> </div>";
 
   $("#task_col").append(html);

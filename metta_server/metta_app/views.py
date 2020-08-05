@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
-from .models import Crop, SensorEntry, Schedule, TrayState
+from .models import SensorEntry, Schedule, TrayState
 from datetime import date, timedelta, datetime
 import joblib
 
@@ -13,6 +13,7 @@ def index(request):
     return render(request, 'app.html')
 
 
+# API for arduino sensors to send data
 def sensorentry_new(request) -> HttpResponse:
     example_hint = "GET structure:\n/new?sensor_id=0000&ec=####&temp=###"
 
@@ -33,6 +34,7 @@ def sensorentry_new(request) -> HttpResponse:
     return HttpResponse(example_hint)
 
 
+# Tray state is a single entry in the database, modifies accordingly to the colors of the 4 trays
 def tray_state(request) -> HttpResponse:
     if request.is_ajax and request.method == "GET":
         incoming = request.GET
@@ -52,15 +54,6 @@ def tray_state(request) -> HttpResponse:
         elif TrayState.objects.count() == 0:
             return JsonResponse({'Response': 'Tray state database empty'}, status=400)
 
-        # populate database again when it gets low
-        # elif TrayState.objects.count() <= 12:
-        #     for i in range(16):
-        #         e = TrayState(date=TrayState.objects.last().date+timedelta((i+1)*step*7),
-        #                       tray1=cycles[i % 4][0],
-        #                       tray2=cycles[i % 4][1],
-        #                       tray3=cycles[i % 4][2],
-        #                       tray4=cycles[i % 4][3])
-        #         e.save()
 
         oldest_entry = TrayState.objects.first()
         return JsonResponse({
@@ -92,7 +85,7 @@ def scheduler(request) -> HttpResponse:
         # restart schedule
         if (incoming.get('growth_period') or incoming.get('restart')):
             Schedule.objects.all().delete()
-            if incoming.get('growth_period'): step = int(int(incoming.get('growth_period'))/4)
+            if incoming.get('growth_period'): step = round(int(incoming.get('growth_period'))/4)
             for i in range(0, 2*step, step):
                 e = Schedule(week=i, date=date.today(
                 )+timedelta(i*7), to_plant=seq[int((i/step) % 4)], to_transfer='blank', to_harvest='blank')
@@ -174,6 +167,7 @@ def scheduler(request) -> HttpResponse:
         return JsonResponse({'data': list(data)}, safe=False)
 
 
+# raw data route url for check sensor values history
 def raw_data(request):
     context = {}
     all_data = SensorEntry.objects.all()
@@ -181,6 +175,7 @@ def raw_data(request):
     return render(request, "raw_data.html", context)
 
 
+# returns latest sansor value, or calculation of nutrient sol
 def latest_sensor_val(request):
 
     if request.is_ajax and request.method == "GET":
@@ -204,11 +199,10 @@ def latest_sensor_val(request):
             return JsonResponse({'nutr_vol': nutr_vol}, status=200)
 
         # trim database
-        if SensorEntry.objects.count() > 100000: # about 3 days of entries
+        if SensorEntry.objects.count() > 100000: # about a week of entries
             max_date = SensorEntry.objects[10000] # index 0 is oldest entry, delete 0 - 9999th entry
             old = SensorEntry.objects.filter(datetime_created__lt = max_date)
             old.delete()
-
 
         # realtime display
         return JsonResponse({
