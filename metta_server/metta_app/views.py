@@ -184,8 +184,8 @@ def latest_sensor_val(request):
         temp = SensorEntry.objects.order_by('datetime_created').last().temp
         ec = SensorEntry.objects.order_by('datetime_created').last().ec
 
-        path = "./metta_app/models/nutr_model"  # relative path for dev
-        # path = "/home/pi/Desktop/metta_server/metta_app/models/nutr_model" # path for rpi
+        # path = "./metta_app/models/nutr_model"  # relative path for dev
+        path = "/home/pi/Desktop/metta_server/metta_app/models/nutr_model" # path for rpi
 
 
         # nutrient vol calculator (machine learning)

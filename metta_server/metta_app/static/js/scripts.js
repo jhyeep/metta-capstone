@@ -68,7 +68,7 @@ $(document).ready(function () {
     //   },
     // });
 
-    var output = (0.02 * water_vol*1000) - ((ec_calc/2) * 0.02)*water_vol*1000;
+    var output = ((0.02 * water_vol*1000) - ((ec_calc/2) * 0.02)*water_vol*1000).toFixed(1);
     (output > 0) ? $("#nutr_vol").text(output + " ml") : $("#nutr_vol").text("0 ml");
     
 
@@ -97,6 +97,7 @@ $(document).ready(function () {
           $("#no_wifi").hide();
         }
 
+        
         if (!expired && parseFloat(response.ec) < 1.5) {
           $("#ec_ok").text('LOW');
           $("#ec_ok").css("color", color_to_hex('red'));
@@ -251,6 +252,7 @@ function add_task(task, tray, color, due_date, first = false) {
     '<div class="card-footer"> <div class="row text-right"> <div class="col" style="height: 26.8571px">';
   var now = new Date();
   var task_date = new Date(due_date).setHours(0, 0, 0, 0);
+  // task_date = task_date - (6.048e+8)*2;
   var time_diff = Math.abs(task_date - now);
   var hours_diff = Math.ceil(time_diff / (1000 * 60 * 60));
   var days_diff = Math.ceil(time_diff / (1000 * 60 * 60 * 24));
@@ -363,6 +365,7 @@ function complete_task(task_type) {
       //modify tray in database
       activate_trays();
       set_next_harvest();
+
     },
     error: function (response) {
       console.log(response);
