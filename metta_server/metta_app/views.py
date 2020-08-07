@@ -48,12 +48,11 @@ def tray_state(request) -> HttpResponse:
         if incoming.get('new') or TrayState.objects.count() == 0:
             TrayState.objects.all().delete
             e = TrayState(date=date.today(),
-                            tray1='blank', tray2='blank', tray3='blank', tray4='blank')
+                          tray1='blank', tray2='blank', tray3='blank', tray4='blank')
             e.save()
 
         elif TrayState.objects.count() == 0:
             return JsonResponse({'Response': 'Tray state database empty'}, status=400)
-
 
         oldest_entry = TrayState.objects.first()
         return JsonResponse({
@@ -75,17 +74,17 @@ def scheduler(request) -> HttpResponse:
         seq = ['red', 'blue', 'orange', 'green']
         times = 24
 
-
         # next harvest date
         if (incoming.get('next_harvest')):
-            next_harvest_date = Schedule.objects.exclude(to_harvest='blank')[0].date
+            next_harvest_date = Schedule.objects.exclude(to_harvest='blank')[
+                0].date
             return JsonResponse({'date': next_harvest_date.strftime("%d %b")}, status=200)
-
 
         # restart schedule
         if (incoming.get('growth_period') or incoming.get('restart')):
             Schedule.objects.all().delete()
-            if incoming.get('growth_period'): step = round(int(incoming.get('growth_period'))/4)
+            if incoming.get('growth_period'):
+                step = round(int(incoming.get('growth_period'))/4)
             for i in range(0, 2*step, step):
                 e = Schedule(week=i, date=date.today(
                 )+timedelta(i*7), to_plant=seq[int((i/step) % 4)], to_transfer='blank', to_harvest='blank')
@@ -99,7 +98,7 @@ def scheduler(request) -> HttpResponse:
                     (i/step) % 4)], to_transfer=seq[int(((i/step)+2) % 4)], to_harvest=seq[int((i/step) % 4)])
                 e.save()
 
-            #reset tray state
+            # reset tray state
             t = TrayState.objects.first()
             t.tray1 = 'blank'
             t.tray2 = 'blank'
@@ -109,15 +108,12 @@ def scheduler(request) -> HttpResponse:
 
             return JsonResponse({'Response': 'Restarted schedule'}, status=200)
 
-
-
         # populate database again when it gets low
         if Schedule.objects.count() <= 12:
             for i in range(16):
                 e = Schedule(week=Schedule.objects.last().week+((i+1)*step), date=Schedule.objects.last().date +
                              timedelta((i+1)*step*7), to_plant=seq[i % 4], to_transfer=seq[(i+2) % 4], to_harvest=seq[i % 4])
                 e.save()
-
 
         # user completes a task
         if (incoming.get('completed')):
@@ -127,7 +123,7 @@ def scheduler(request) -> HttpResponse:
                 color = e.to_plant
                 e.to_plant = 'blank'
                 # only tray 2 and 3 can have new seeds
-                if (color == 'red' or color == 'orange'): 
+                if (color == 'red' or color == 'orange'):
                     t.tray2 = color
                 elif (color == 'blue' or color == 'green'):
                     t.tray3 = color
@@ -136,16 +132,16 @@ def scheduler(request) -> HttpResponse:
             elif (incoming.get('completed') == 'harvest'):
                 color = e.to_harvest
                 e.to_harvest = 'blank'
-                if (color == 'red' or color == 'orange'): 
+                if (color == 'red' or color == 'orange'):
                     t.tray1 = 'blank'
                 elif (color == 'blue' or color == 'green'):
                     t.tray4 = 'blank'
                 t.save()
-                
+
             elif (incoming.get('completed') == 'transfer'):
                 color = e.to_transfer
                 e.to_transfer = 'blank'
-                if (color == 'red' or color == 'orange'): 
+                if (color == 'red' or color == 'orange'):
                     t.tray2 = 'blank'
                     t.tray1 = color
                 elif (color == 'blue' or color == 'green'):
@@ -159,8 +155,6 @@ def scheduler(request) -> HttpResponse:
                 e.save()
 
             return JsonResponse({'response': 'completed task ' + incoming.get('completed')}, status=200)
-
-
 
         # return all weeks tasks, default
         data = Schedule.objects.all()[:4].values()
@@ -187,8 +181,7 @@ def latest_sensor_val(request):
         # path = "./metta_app/models/nutr_model"  # relative path for dev
         path = "/home/pi/Desktop/metta_server/metta_app/models/nutr_model" # path for rpi
 
-
-        # nutrient vol calculator (machine learning)
+        # nutrient vol calculator (unused machine learning)
         incoming = request.GET
         if incoming.get('calc'):
             target_conc = incoming.get('target_conc')
@@ -199,9 +192,10 @@ def latest_sensor_val(request):
             return JsonResponse({'nutr_vol': nutr_vol}, status=200)
 
         # trim database
-        if SensorEntry.objects.count() > 100000: # about a week of entries
-            max_date = SensorEntry.objects[10000] # index 0 is oldest entry, delete 0 - 9999th entry
-            old = SensorEntry.objects.filter(datetime_created__lt = max_date)
+        if SensorEntry.objects.count() > 100000:
+            # index 0 is oldest entry, delete 0 - 9999th entry
+            max_date = SensorEntry.objects[10000]
+            old = SensorEntry.objects.filter(datetime_created__lt=max_date)
             old.delete()
 
         # realtime display

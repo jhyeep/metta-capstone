@@ -68,10 +68,13 @@ $(document).ready(function () {
     //   },
     // });
 
-    var output = ((0.02 * water_vol*1000) - ((ec_calc/2) * 0.02)*water_vol*1000).toFixed(1);
-    (output > 0) ? $("#nutr_vol").text(output + " ml") : $("#nutr_vol").text("0 ml");
-    
-
+    var output = (
+      0.02 * water_vol * 1000 -
+      (ec_calc / 2) * 0.02 * water_vol * 1000
+    ).toFixed(0);
+    output > 0
+      ? $("#nutr_vol").text(output + " ml")
+      : $("#nutr_vol").text("0 ml");
   });
 
   // Realtime EC/Temp Display + Tray States
@@ -80,16 +83,13 @@ $(document).ready(function () {
       type: "GET",
       url: "latest_sensor_val",
       success: function (response) {
-
         var now = new Date();
         var last_updated = new Date(response.datetime_created);
-        var expired = Math.abs(now - last_updated) > 300000;
-        // console.log(Math.abs(now - last_updated));
-        // console.log(last_updated)
-        // console.log(now)
+        var expired = Math.abs(now - last_updated) > 300000; //5 min since last updated
+
         if (expired) {
-          $("#temp_display").text('??');
-          $("#ec_display").text('??');
+          $("#temp_display").text("??");
+          $("#ec_display").text("??");
           $("#no_wifi").show();
         } else {
           $("#temp_display").text(response.temp);
@@ -97,27 +97,28 @@ $(document).ready(function () {
           $("#no_wifi").hide();
         }
 
-        
-        if (!expired && parseFloat(response.ec) < 1.5) {
-          $("#ec_ok").text('LOW');
-          $("#ec_ok").css("color", color_to_hex('red'));
-        } else if (!expired && parseFloat(response.ec) > 2.5){
-          $("#ec_ok").text('HIGH');
-          $("#ec_ok").css("color", color_to_hex('red'));
-        } else if (!expired){
-          $("#ec_ok").text('OK');
-          $("#ec_ok").css("color", '#51c528');
-        }
+        if (!expired) {
+          if (parseFloat(response.ec) < 1.5) {
+            $("#ec_ok").text("LOW");
+            $("#ec_ok").css("color", color_to_hex("red"));
+          } else if (parseFloat(response.ec) > 2.5) {
+            $("#ec_ok").text("HIGH");
+            $("#ec_ok").css("color", color_to_hex("red"));
+          } else {
+            $("#ec_ok").text("OK");
+            $("#ec_ok").css("color", "#51c528");
+          }
 
-        if (!expired && parseFloat(response.temp) < 20) {
-          $("#temp_ok").text('LOW');
-          $("#temp_ok").css("color", color_to_hex('red'));
-        } else if (!expired && parseFloat(response.temp) > 35){
-          $("#temp_ok").text('HIGH');
-          $("#temp_ok").css("color", color_to_hex('red'));
-        } else if (!expired){
-          $("#temp_ok").text('OK');
-          $("#temp_ok").css("color", '#51c528');
+          if (parseFloat(response.temp) < 20) {
+            $("#temp_ok").text("LOW");
+            $("#temp_ok").css("color", color_to_hex("red"));
+          } else if (parseFloat(response.temp) > 35) {
+            $("#temp_ok").text("HIGH");
+            $("#temp_ok").css("color", color_to_hex("red"));
+          } else {
+            $("#temp_ok").text("OK");
+            $("#temp_ok").css("color", "#51c528");
+          }
         }
       },
       error: function (response) {
@@ -135,7 +136,7 @@ $(document).ready(function () {
 });
 
 /*
-FUNCTIONS
+==============FUNCTIONS==============
 */
 
 function color_to_hex(color) {
@@ -159,7 +160,10 @@ function set_tray_color(tray_class, color) {
 }
 
 function set_tray_stage(tray_class, stage) {
-  $('#' + tray_class + '_plant').attr("src", "../static/images/" + stage + ".png");
+  $("#" + tray_class + "_plant").attr(
+    "src",
+    "../static/images/" + stage + ".png"
+  );
 }
 
 //gets tray state from database and sets trays in html. Also changes growth period input text
@@ -181,10 +185,11 @@ function activate_trays() {
         type: "GET",
         url: "scheduler",
         success: function (response) {
-          last_growth_period = 4 * (parseInt(response.data[1].week) - parseInt(response.data[0].week));
+          last_growth_period =
+            4 *
+            (parseInt(response.data[1].week) - parseInt(response.data[0].week));
           $("#growth_weeks").text(last_growth_period + " weeks");
-          //set tray state code further implementation
-
+          //set_tray_state code further implementation
         },
         error: function (response) {
           console.log(response);
@@ -218,7 +223,10 @@ function add_task(task, tray, color, due_date, first = false) {
 
   html =
     '<div class="card shadow mb-4"> <div class="card-header py-3"> <h6 class="font-weight-bold m-0" style="font-family: Lato, sans-serif;font-size: 18px;">' +
-    task + ' (' + tray + ')' +
+    task +
+    " (" +
+    tray +
+    ")" +
     '</h6> </div> <div class="card-body"> <div class="row"> <div class="col"> <div class="text-uppercase text-info font-weight-bold text-xs mb-1"></div> </div> </div> <div class="row">';
 
   //trays in card
@@ -257,13 +265,9 @@ function add_task(task, tray, color, due_date, first = false) {
   var hours_diff = Math.ceil(time_diff / (1000 * 60 * 60));
   var days_diff = Math.ceil(time_diff / (1000 * 60 * 60 * 24));
 
-  // first ? 
-  // html +=
-  //     '<i class="material-icons" style="vertical-align: text-bottom">delete</i><span id="clear_task_button" style="font-family: Lato, sans-serif;font-size: 18px;"> Clear </span>' 
-  //     : html += ''
-  
+
   // if (first) {
-  if (first && now > task_date) {
+    if (first && now > task_date) {
     html +=
       '<i class="material-icons" style="color: #858796;vertical-align: text-bottom">delete</i><span id="clear_task_button" style="font-family: Lato, sans-serif;font-size: 18px;"> Clear </span>';
   } else if (days_diff == 1) {
@@ -340,10 +344,8 @@ function get_and_generate_tasks() {
             // console.log("harvest clear");
           } else if (response.data[0].to_transfer != "blank") {
             complete_task("transfer", response.data[0].to_transfer);
-            // console.log("transfer clear");
           } else if (response.data[0].to_plant != "blank") {
             complete_task("plant", response.data[0].to_plant);
-            // console.log("plant clear");
           }
         });
       }, 2);
@@ -365,7 +367,6 @@ function complete_task(task_type) {
       //modify tray in database
       activate_trays();
       set_next_harvest();
-
     },
     error: function (response) {
       console.log(response);
